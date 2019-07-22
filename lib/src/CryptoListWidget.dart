@@ -29,21 +29,60 @@ class CryptoListWidget extends StatelessWidget {
   }
 
   Widget _getAppTitleWidget() {
-    return Text(
+    return Container(
+        child: Text(
       "Cryptocurrency",
       style: TextStyle(
           color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24.0),
-    );
+    ));
   }
 
   Widget _getListViewWidget() {
-    return ListView.builder(
-      itemCount: _currencies.length,
-      itemBuilder: (context, index) {
-        final Map currency = _currencies[index];
+    return Flexible(
+      child: ListView.builder(
+        itemCount: _currencies.length,
+        itemBuilder: (context, index) {
+          final Map currency = _currencies[index];
 
-        final MaterialColor color = _colors[index % _colors.length];
-      },
+          final MaterialColor color = _colors[index % _colors.length];
+
+          return _getListItemWidget(currency, color);
+        },
+      ),
+    );
+  }
+
+  CircleAvatar _getLeadingWidget(String currencyName, MaterialColor color) {
+    return CircleAvatar(child: Text(currencyName[0]), backgroundColor: color);
+  }
+
+  Text _getTitleWidget(String currencyName) {
+    return Text(
+      currencyName,
+      style: TextStyle(fontWeight: FontWeight.bold),
+    );
+  }
+
+  Text _getSubtitleWidget(String priceUsd, String percentageChange) {
+    return Text('\$$priceUsd\n1 hour: $percentageChange%');
+  }
+
+  ListTile _getListTile(Map currency, MaterialColor color) {
+    return ListTile(
+      leading: _getLeadingWidget(currency['name'], color),
+      title: _getTitleWidget(currency['name']),
+      subtitle: _getSubtitleWidget(
+          currency['price_usd'], currency['percent_change_1h']),
+      isThreeLine: true,
+    );
+  }
+
+  Container _getListItemWidget(Map currency, MaterialColor color) {
+    return Container(
+      child: Card(
+        child: _getListTile(currency, color),
+      ),
+      margin: EdgeInsets.only(top: 5.0),
     );
   }
 }
